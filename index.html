@@ -3,752 +3,235 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vocab Defender - Arcade Typing Game</title>
-    <!-- Google Fonts -->
+    <title>LexiScramble - Fun Vocab Learning</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-color: #08090d;
-            --bg-card: #121420;
-            --border-color: #2a2e45;
-            --accent-primary: #00f2fe;
-            --accent-secondary: #ff2a5f;
-            --accent-green: #39ff14;
-            --text-main: #ffffff;
-            --text-muted: #a0aec0;
-            --font-ui: 'Outfit', sans-serif;
-            --font-game: 'Share Tech Mono', monospace;
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: var(--bg-color);
-            background-image: radial-gradient(circle at center, #1b2035 0%, #08090d 100%);
-            height: 100vh;
-            color: var(--text-main);
-            font-family: var(--font-ui);
-            overflow: hidden;
-            flex-direction: column;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            margin: 5px 0 15px 0;
-            font-weight: 800;
-            letter-spacing: 2px;
-            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
-            text-transform: uppercase;
-        }
-
-        #top-controls {
-            width: 800px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            background-color: rgba(18, 20, 32, 0.85);
-            padding: 12px 20px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        }
-
-        .control-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 15px;
-            color: var(--text-muted);
-            font-weight: 600;
-        }
-
-        select, button, .file-upload-btn, input[type="number"] {
-            background-color: #1a1d2e;
-            color: var(--accent-primary);
-            border: 1px solid var(--border-color);
-            padding: 8px 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-            font-family: var(--font-ui);
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
-
-        input[type="number"] {
-            width: 60px;
-            text-align: center;
-            cursor: text;
-        }
-
-        input[type="number"]::placeholder {
-            color: var(--accent-primary);
-            opacity: 0.6;
-        }
-
-        select:hover, button:hover, .file-upload-btn:hover, input[type="number"]:hover {
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 10px rgba(0, 242, 254, 0.2);
-        }
-
-        select:focus, button:active, input[type="number"]:focus {
-            background-color: var(--accent-primary);
-            color: var(--bg-color);
-            outline: none;
-            box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
-        }
-
-        #ui-container {
-            width: 800px;
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 12px;
-            font-size: 22px;
-            font-weight: bold;
-            font-family: var(--font-game);
-            color: var(--accent-primary);
-            text-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
-        }
-
-        .stat-value {
-            color: var(--text-main);
-        }
-
-        .stat-lives {
-            color: var(--accent-secondary);
-            text-shadow: 0 0 10px rgba(255, 42, 95, 0.5);
-        }
-
-        canvas {
-            background: linear-gradient(to bottom, #08090d 0%, #121420 100%);
-            border: 3px solid var(--border-color);
-            border-radius: 16px;
-            box-shadow: 0 0 40px rgba(0, 242, 254, 0.15);
-            cursor: none; /* Hide cursor inside canvas */
-            transition: border-color 0.3s;
-        }
-
-        #instructions {
-            margin-top: 15px;
-            color: var(--text-muted);
-            text-align: center;
-            font-size: 14px;
-            line-height: 1.6;
-            letter-spacing: 0.5px;
-        }
-
-        #instructions span {
-            color: var(--accent-primary);
-            font-weight: bold;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="bg-animation">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
 
-    <h1>Vocab Defender</h1>
-
-    <!-- Top Control Panel -->
-    <div id="top-controls">
-        <div class="control-group">
-            <label for="topicSelect">Topic:</label>
-            <select id="topicSelect">
-                <option value="vocabularies/1_a_favourite_toy_shop.csv" selected>1. A Favourite Toy Shop</option>
-                <option value="vocabularies/2_the_party.csv">2. The Party</option>
-                <option value="vocabularies/3_at_the_doctors.csv">3. At the Doctor's</option>
-                <option value="vocabularies/4_uncle_charlies_hotel.csv">4. Uncle Charlie's Hotel</option>
-                <option value="vocabularies/5_from_the_countryside_to_the_jungle.csv">5. Countryside to Jungle</option>
-                <option value="vocabularies/6_the_weather.csv">6. The Weather</option>
-                <option value="vocabularies/7_our_town.csv">7. Our Town</option>
-                <option value="vocabularies/8_dreaming_of_holidays.csv">8. Dreaming of Holidays</option>
-                <option value="vocabularies/9_some_games.csv">9. Some Games</option>
-            </select>
+    <!-- Mistake Sidebar Drawer -->
+    <div class="mistake-sidebar" id="mistake-drawer">
+        <div class="drawer-header">
+            <h2>Mistake Bank</h2>
+            <button id="close-drawer" class="close-btn">&times;</button>
         </div>
-        <div class="control-group">
-            <label for="speedSelect">Speed:</label>
-            <select id="speedSelect">
-                <option value="0.2" selected>Slowest</option>
-                <option value="0.5">Slow</option>
-                <option value="1.0">Normal</option>
-                <option value="1.5">Fast</option>
-                <option value="2.5">Extreme</option>
-            </select>
+        <div class="drawer-body">
+            <p class="drawer-hint">Review and master the words you missed.</p>
+            <ul class="mistake-list" id="mistake-list-items">
+                <!-- Dynamic items -->
+            </ul>
         </div>
-        <div class="control-group">
-            <label for="livesSelect">Lives:</label>
-            <select id="livesSelect">
-                <option value="3">3</option>
-                <option value="5" selected>5</option>
-                <option value="10">10</option>
-                <option value="99">99</option>
-            </select>
-        </div>
-        <div class="control-group">
-            <label for="timeInput">Time (min):</label>
-            <input type="number" id="timeInput" min="1" step="1" placeholder="∞">
-        </div>
-        <div class="control-group">
-            <label for="csvUpload" class="file-upload-btn">Import CSV</label>
-            <input type="file" id="csvUpload" accept=".csv" style="display: none;">
-        </div>
-        <div>
-            <button id="restartBtn">Restart</button>
+        <div class="drawer-footer">
+            <button id="clear-mistakes" class="btn-outline">Clear All</button>
+            <button id="practice-mistakes-btn" class="btn-primary" style="margin: 0; padding: 10px 20px;" disabled>Practice Now</button>
         </div>
     </div>
 
-    <!-- Game Stats Info -->
-    <div id="ui-container">
-        <div>SCORE: <span id="score" class="stat-value">0</span></div>
-        <div>TIME: <span id="timerDisplay" class="stat-value">∞</span> ⏳</div>
-        <div>LIVES: <span id="lives" class="stat-lives">5</span> ❤️</div>
+    <!-- Progress Sidebar Drawer -->
+    <div class="mistake-sidebar" id="progress-drawer">
+        <div class="drawer-header">
+            <h2 id="progress-drawer-title">Practiced Progress</h2>
+            <button id="close-progress-drawer" class="close-btn">&times;</button>
+        </div>
+        <div class="drawer-body">
+            <p class="drawer-hint">Review the vocabulary words you have historically completed in this list.</p>
+            <ul class="mistake-list" id="progress-list-items">
+                <!-- Dynamic items -->
+            </ul>
+        </div>
+        <div class="drawer-footer">
+            <button id="clear-progress" class="btn-outline" style="width:100%;">Reset All Progress</button>
+        </div>
     </div>
 
-    <!-- Game Canvas -->
-    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <!-- Floating Toggles -->
+    <button id="progress-toggle-btn" class="mistake-fab progress-fab" title="View Practiced Progress">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+    </button>
 
-    <div id="instructions">
-        Type the letters on your keyboard to lock on and shoot lasers! ⚡<br>
-        Topic files are loaded dynamically from the <span>vocabularies/</span> folder.
-    </div>
+    <button id="mistake-toggle-btn" class="mistake-fab" title="View Mistake Bank">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        <span id="mistake-badge" class="badge">0</span>
+    </button>
 
-    <script>
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const scoreElement = document.getElementById('score');
-        const livesElement = document.getElementById('lives');
-        const timerElement = document.getElementById('timerDisplay');
-
-        // --- Game State ---
-        let score = 0;
-        let initialLives = 5;
-        let lives = initialLives;
-        let gameOver = false;
-        let gameTime = 0; 
-        let speedMultiplier = 0.2; 
-        let animationId; 
-
-        // Timer variables
-        let isUnlimited = true;
-        let timeRemaining = 0; 
-        let lastFrameTime = 0;
-
-        // --- Default Vocabulary fallback ---
-        const defaultVocabList = [
-            { en: 'apple', zh: '蘋果' }, { en: 'dog', zh: '狗' }, { en: 'cat', zh: '貓' },
-            { en: 'book', zh: '書本' }, { en: 'sun', zh: '太陽' }, { en: 'moon', zh: '月亮' },
-            { en: 'water', zh: '水' }, { en: 'fire', zh: '火' }, { en: 'tree', zh: '樹木' },
-            { en: 'bird', zh: '鳥' }, { en: 'fish', zh: '魚' }, { en: 'car', zh: '車子' },
-            { en: 'school', zh: '學校' }, { en: 'happy', zh: '快樂' }, { en: 'play', zh: '玩耍' }
-        ];
-        let vocabList = [...defaultVocabList];
-
-        // --- Robust CSV parser handling quotes and internal commas ---
-        function parseCSVLine(line) {
-            const result = [];
-            let current = '';
-            let inQuotes = false;
-            for (let i = 0; i < line.length; i++) {
-                const char = line[i];
-                if (char === '"') {
-                    inQuotes = !inQuotes;
-                } else if (char === ',' && !inQuotes) {
-                    result.push(current.trim());
-                    current = '';
-                } else {
-                    current += char;
-                }
-            }
-            result.push(current.trim());
-            return result;
-        }
-
-        // --- Load CSV vocabulary lists ---
-        async function loadVocabulary(filePath) {
-            try {
-                const response = await fetch(filePath);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const text = await response.text();
-                const lines = text.split(/\r?\n/);
-                const newVocab = [];
-
-                // Read from the second line (skip headers)
-                for (let i = 1; i < lines.length; i++) {
-                    const line = lines[i];
-                    if (!line.trim()) continue;
-
-                    const cols = parseCSVLine(line);
-                    if (cols.length >= 3) {
-                        const en = cols[0].toLowerCase();
-                        const zh = cols[2];
-                        if (en && zh) {
-                            newVocab.push({ en: en, zh: zh });
-                        }
-                    }
-                }
-
-                if (newVocab.length > 0) {
-                    vocabList = newVocab;
-                    console.log(`Successfully loaded ${newVocab.length} words from ${filePath}`);
-                    resetGame();
-                } else {
-                    console.warn("No words found in CSV. Using fallback vocabulary.");
-                }
-            } catch (error) {
-                console.error("Could not load vocabulary CSV.", error);
-            }
-        }
-
-        // --- Import CSV Custom Feature ---
-        document.getElementById('csvUpload').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const text = event.target.result;
-                const lines = text.split(/\r?\n/);
-                const newVocab = [];
-
-                for (let i = 1; i < lines.length; i++) {
-                    const line = lines[i];
-                    if (!line.trim()) continue;
-
-                    const cols = parseCSVLine(line);
-                    if (cols.length >= 3) {
-                        const en = cols[0].toLowerCase();
-                        const zh = cols[2];
-                        if (en && zh) {
-                            newVocab.push({ en: en, zh: zh });
-                        }
-                    }
-                }
-
-                if (newVocab.length > 0) {
-                    vocabList = newVocab;
-                    // Reset topicSelect selection since custom CSV is loaded
-                    document.getElementById('topicSelect').selectedIndex = -1;
-                    alert(`Successfully imported ${newVocab.length} words!`);
-                    resetGame();
-                } else {
-                    alert('Import failed. Please check if the CSV format is correct.');
-                }
-                
-                document.getElementById('csvUpload').value = '';
-            };
-            reader.readAsText(file);
-        });
-
-        // --- Selectors/Inputs ---
-        document.getElementById('topicSelect').addEventListener('change', (e) => {
-            if (e.target.value) {
-                loadVocabulary(e.target.value);
-            }
-        });
-
-        document.getElementById('speedSelect').addEventListener('change', (e) => {
-            speedMultiplier = parseFloat(e.target.value);
-        });
-
-        document.getElementById('livesSelect').addEventListener('change', (e) => {
-            initialLives = parseInt(e.target.value);
-            resetGame(); 
-        });
-
-        document.getElementById('timeInput').addEventListener('input', () => {
-            resetGame(); 
-        });
-
-        document.getElementById('restartBtn').addEventListener('click', () => {
-            resetGame();
-        });
-
-        // --- Game Entities ---
-        let activeWords = [];
-        let particles = [];
-        let lasers = [];
-        let stars = [];
-        let targetedWord = null;
-
-        // Initialize background stars
-        for (let i = 0; i < 100; i++) {
-            stars.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                size: Math.random() * 2,
-                speed: Math.random() * 0.4 + 0.1
-            });
-        }
-
-        // --- Class Definitions ---
-        class FallingWord {
-            constructor() {
-                const randomVocab = vocabList[Math.floor(Math.random() * vocabList.length)];
-                this.text = randomVocab.en;
-                this.zh = randomVocab.zh;
-                
-                // Set canvas font to measure text width
-                ctx.font = 'bold 24px "Share Tech Mono", Courier New, monospace';
-                this.width = ctx.measureText(this.text).width;
-                
-                // Prevent spawning off-screen
-                this.x = Math.random() * (canvas.width - this.width - 60) + 30; 
-                this.y = -50;
-                
-                // Adjust speed based on multiplier and game time progression
-                const baseSpeed = 0.5 * speedMultiplier;
-                const timeFactor = (gameTime / 180000) * speedMultiplier;
-                const randomFactor = Math.random() * 0.4 * speedMultiplier;
-                this.speed = Math.max(baseSpeed + timeFactor + randomFactor, 0.15);
-                
-                this.typedIndex = 0;
-            }
-
-            draw() {
-                const isTargeted = targetedWord === this;
-                const opacity = (targetedWord && !isTargeted) ? 0.35 : 1;
-
-                ctx.save();
-                ctx.globalAlpha = opacity;
-
-                // Box Shadow / Glow
-                if (isTargeted) {
-                    ctx.shadowBlur = 15;
-                    ctx.shadowColor = '#00f2fe';
-                }
-
-                // Drawing Background Card
-                ctx.fillStyle = 'rgba(18, 20, 32, 0.9)';
-                ctx.beginPath();
-                ctx.roundRect(this.x - 15, this.y - 42, this.width + 30, 56, 12);
-                ctx.fill();
-                
-                ctx.strokeStyle = isTargeted ? '#00f2fe' : '#2a2e45';
-                ctx.lineWidth = isTargeted ? 2.5 : 1.5;
-                ctx.stroke();
-
-                // Clear shadow for text
-                ctx.shadowBlur = 0;
-
-                // Translation hint
-                ctx.fillStyle = '#a0aec0';
-                ctx.font = '15px "Microsoft JhengHei", sans-serif'; 
-                ctx.textAlign = 'center';
-                ctx.fillText(this.zh, this.x + this.width / 2, this.y - 20);
-
-                // Word text
-                ctx.font = 'bold 24px "Share Tech Mono", monospace';
-                ctx.textAlign = 'left';
-                const typedPart = this.text.substring(0, this.typedIndex);
-                const untypedPart = this.text.substring(this.typedIndex);
-
-                // Highlight typed letters in cyber cyan
-                ctx.fillStyle = '#00f2fe'; 
-                ctx.fillText(typedPart, this.x, this.y + 6);
-                
-                const typedWidth = ctx.measureText(typedPart).width;
-                // Untyped letters in bright white
-                ctx.fillStyle = '#ffffff'; 
-                ctx.fillText(untypedPart, this.x + typedWidth, this.y + 6);
-
-                ctx.restore();
-            }
-
-            update() {
-                this.y += this.speed;
-            }
-        }
-
-        class Particle {
-            constructor(x, y, color) {
-                this.x = x;
-                this.y = y;
-                this.vx = (Math.random() - 0.5) * 8;
-                this.vy = (Math.random() - 0.5) * 8;
-                this.life = 1;
-                this.color = color;
-                this.size = Math.random() * 4 + 2;
-            }
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-                this.life -= 0.04;
-                this.size *= 0.95;
-            }
-            draw() {
-                ctx.save();
-                ctx.globalAlpha = this.life;
-                ctx.fillStyle = this.color;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.restore();
-            }
-        }
-
-        class Laser {
-            constructor(targetX, targetY) {
-                this.x = canvas.width / 2;
-                this.y = canvas.height;
-                this.targetX = targetX;
-                this.targetY = targetY;
-                this.life = 1.0;
-            }
-            update() {
-                this.life -= 0.12;
-            }
-            draw() {
-                ctx.save();
-                ctx.globalAlpha = this.life;
-                ctx.strokeStyle = '#00f2fe';
-                ctx.shadowBlur = 10;
-                ctx.shadowColor = '#00f2fe';
-                ctx.lineWidth = 4;
-                ctx.beginPath();
-                ctx.moveTo(this.x, this.y);
-                ctx.lineTo(this.targetX, this.targetY);
-                ctx.stroke();
-                ctx.restore();
-            }
-        }
-
-        // --- Helper Functions ---
-        function createExplosion(x, y) {
-            for (let i = 0; i < 20; i++) {
-                particles.push(new Particle(x, y, '#00f2fe'));
-                particles.push(new Particle(x, y, '#ff2a5f'));
-            }
-        }
-
-        function drawPlayerBase() {
-            ctx.save();
-            ctx.fillStyle = '#121420';
-            ctx.beginPath();
-            ctx.arc(canvas.width / 2, canvas.height, 45, Math.PI, 0);
-            ctx.fill();
+    <main class="glass-container" id="app-container">
+        <!-- View: Upload & Config -->
+        <section id="view-upload" class="view active">
+            <h1 class="brand-title">LexiScramble</h1>
+            <div class="subtitle" id="upload-subtitle">Upload your vocabulary CSV to begin the challenge.</div>
             
-            ctx.strokeStyle = '#00f2fe';
-            ctx.lineWidth = 3;
-            ctx.stroke();
-            
-            // Cannon nozzle
-            ctx.fillStyle = '#00f2fe';
-            ctx.fillRect(canvas.width / 2 - 8, canvas.height - 55, 16, 25);
-            ctx.restore();
-        }
+            <!-- Stage 1: File drag & drop upload -->
+            <div id="upload-zone-container">
+                <div class="upload-zone" id="drop-zone">
+                    <div class="upload-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                    </div>
+                    <h3>Drag & Drop your CSV</h3>
+                    <p>or click to browse</p>
+                    <input type="file" id="csv-input" accept=".csv" hidden>
+                </div>
+                <div class="format-hint" style="margin-bottom: 20px;">
+                    Format: "Word", "Type", "Definition", "Example Sentence"
+                </div>
+                <button id="load-demo-btn" class="btn-outline" style="margin: 0 auto; width: 100%; max-width: 320px; display: block; border-color: rgba(255, 255, 255, 0.15); padding: 12px 0;">Try Demo Vocab List</button>
 
-        function drawBackground() {
-            ctx.save();
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-            stars.forEach(star => {
-                ctx.beginPath();
-                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-                ctx.fill();
-                star.y += star.speed;
-                if (star.y > canvas.height) {
-                    star.y = 0;
-                    star.x = Math.random() * canvas.width;
-                }
-            });
-            ctx.restore();
-        }
+                <div style="margin: 20px 0; display: flex; align-items: center; justify-content: center; gap: 10px; color: var(--text-muted);">
+                    <hr style="flex-grow: 1; border: 0; border-top: 1px solid rgba(255,255,255,0.06);">
+                    <span style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Or practice pre-loaded topics</span>
+                    <hr style="flex-grow: 1; border: 0; border-top: 1px solid rgba(255,255,255,0.06);">
+                </div>
 
-        function updateTimerDisplay() {
-            if (isUnlimited) {
-                timerElement.innerText = '∞';
-            } else {
-                const totalSeconds = Math.max(0, Math.ceil(timeRemaining / 1000));
-                const minutes = Math.floor(totalSeconds / 60);
-                const seconds = totalSeconds % 60;
-                timerElement.innerText = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-            }
-        }
+                <div class="topic-grid" style="margin-bottom: 20px;">
+                    <select id="preset-topic-select" style="width: 100%; max-width: 320px; display: block; margin: 0 auto; padding: 12px 16px; font-size: 0.9rem; font-family: inherit; font-weight: 600; cursor: pointer; background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 12px; color: var(--text-main); transition: var(--transition);">
+                        <option value="" style="background: var(--bg-color);">-- Select Topic List --</option>
+                        <option value="vocabularies/1_a_favourite_toy_shop.csv" style="background: var(--bg-color);">1. A Favourite Toy Shop</option>
+                        <option value="vocabularies/2_the_party.csv" style="background: var(--bg-color);">2. The Party</option>
+                        <option value="vocabularies/3_at_the_doctors.csv" style="background: var(--bg-color);">3. At the Doctor's</option>
+                        <option value="vocabularies/4_uncle_charlies_hotel.csv" style="background: var(--bg-color);">4. Uncle Charlie's Hotel</option>
+                        <option value="vocabularies/5_from_the_countryside_to_the_jungle.csv" style="background: var(--bg-color);">5. Countryside to Jungle</option>
+                        <option value="vocabularies/6_the_weather.csv" style="background: var(--bg-color);">6. The Weather</option>
+                        <option value="vocabularies/7_our_town.csv" style="background: var(--bg-color);">7. Our Town</option>
+                        <option value="vocabularies/8_dreaming_of_holidays.csv" style="background: var(--bg-color);">8. Dreaming of Holidays</option>
+                        <option value="vocabularies/9_some_games.csv" style="background: var(--bg-color);">9. Some Games</option>
+                    </select>
+                </div>
+            </div>
 
-        let lastSpawnTime = 0;
-
-        function resetGame() {
-            cancelAnimationFrame(animationId);
-            score = 0;
-            lives = initialLives;
-            gameTime = 0;
-            gameOver = false;
-            activeWords = [];
-            particles = [];
-            lasers = [];
-            targetedWord = null;
-            lastFrameTime = 0;
-            
-            // Setup Timer
-            const timeValue = parseFloat(document.getElementById('timeInput').value);
-            if (!isNaN(timeValue) && timeValue > 0) {
-                isUnlimited = false;
-                timeRemaining = timeValue * 60 * 1000;
-            } else {
-                isUnlimited = true;
-                timeRemaining = 0;
-            }
-            updateTimerDisplay();
-            
-            scoreElement.innerText = score;
-            livesElement.innerText = lives;
-            canvas.style.borderColor = 'var(--border-color)';
-
-            animationId = requestAnimationFrame(gameLoop);
-        }
-
-        function endGame(isTimeUp = false) {
-            gameOver = true;
-            ctx.save();
-            ctx.fillStyle = 'rgba(8, 9, 13, 0.9)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            ctx.fillStyle = isTimeUp ? '#39ff14' : '#ff2a5f';
-            ctx.font = 'bold 50px "Outfit", sans-serif';
-            ctx.textAlign = 'center';
-            const endMessage = isTimeUp ? 'TIME COMPLETED' : 'MISSION FAILED';
-            ctx.fillText(endMessage, canvas.width / 2, canvas.height / 2 - 30);
-            
-            ctx.fillStyle = '#ffffff';
-            ctx.font = '22px "Share Tech Mono", monospace';
-            ctx.fillText(`FINAL SCORE: ${score}`, canvas.width / 2, canvas.height / 2 + 25);
-            ctx.fillStyle = '#a0aec0';
-            ctx.fillText('CLICK [RESTART] TO PLAY AGAIN', canvas.width / 2, canvas.height / 2 + 65);
-            ctx.restore();
-        }
-
-        // --- Game Loop ---
-        function gameLoop(timestamp) {
-            if (gameOver) return;
-
-            if (!lastFrameTime) lastFrameTime = timestamp;
-            const deltaTime = timestamp - lastFrameTime;
-            lastFrameTime = timestamp;
-
-            gameTime += deltaTime; 
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            drawBackground();
-
-            // Timer countdown
-            if (!isUnlimited) {
-                timeRemaining -= deltaTime;
-                updateTimerDisplay();
-                
-                if (timeRemaining <= 0) {
-                    timeRemaining = 0;
-                    updateTimerDisplay();
-                    endGame(true);
-                    return;
-                }
-            }
-
-            // Spawn interval (balanced scaling)
-            let spawnInterval = 1400 + (1 / speedMultiplier) * 750;
-
-            if (timestamp - lastSpawnTime > spawnInterval || activeWords.length === 0) {
-                activeWords.push(new FallingWord());
-                lastSpawnTime = timestamp;
-            }
-
-            // Update words
-            for (let i = activeWords.length - 1; i >= 0; i--) {
-                let word = activeWords[i];
-                word.update();
-                word.draw();
-
-                // Bottom collision (miss)
-                if (word.y > canvas.height + 30) {
-                    activeWords.splice(i, 1);
-                    if (targetedWord === word) targetedWord = null;
+            <!-- Stage 2: Range Selection Config (hidden initially) -->
+            <div id="practice-config" class="hidden">
+                <div class="config-card">
+                    <div class="config-file-info" style="display:flex; align-items:flex-start; gap:16px; text-align:left;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-primary); flex-shrink:0; margin-top:4px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                        <div style="flex-grow:1;">
+                            <h4 id="config-file-name" style="font-weight:600; color:var(--text-main); word-break:break-all; margin-bottom: 2px;">vocab.csv</h4>
+                            <p id="config-max-words" style="font-size:0.85rem; color:var(--text-muted); margin-bottom:8px;">0 vocabulary words found</p>
+                            
+                            <!-- Practice Progress Indicator -->
+                            <div id="config-progress-container" class="hidden" style="margin-top:8px;">
+                                <div style="display:flex; justify-content:space-between; font-size:0.78rem; color:var(--text-muted); margin-bottom:4px;">
+                                    <span id="config-progress-text">Practiced: 0 / 0 words</span>
+                                    <span id="config-progress-percent">0%</span>
+                                </div>
+                                <div style="width:100%; height:4px; background:rgba(255,255,255,0.06); border-radius:2px; overflow:hidden;">
+                                    <div id="config-progress-bar" style="width:0%; height:100%; background:var(--accent-primary); border-radius:2px; transition:width 0.4s ease;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     
-                    lives--;
-                    livesElement.innerText = lives;
+                    <div class="slider-container" style="margin-top: 24px; text-align: left;">
+                        <label for="vocab-count-slider" style="display:block; font-size:0.95rem; font-weight:600; margin-bottom:12px; color:var(--text-main);">Number of words to practice:</label>
+                        <div style="display:flex; align-items:center; gap:15px;">
+                            <input type="range" id="vocab-count-slider" min="1" max="100" value="5" style="flex-grow:1; accent-color:var(--accent-primary); cursor:pointer;">
+                            <input type="number" id="vocab-count-number" min="1" max="100" value="5" style="width:70px; padding:8px 12px; background:rgba(255,255,255,0.05); border:1px solid var(--glass-border); border-radius:8px; color:var(--text-main); text-align:center; font-family:inherit; font-weight:600;">
+                        </div>
+                    </div>
                     
-                    // Flash red border on damage
-                    canvas.style.borderColor = 'var(--accent-secondary)';
-                    setTimeout(() => {
-                        if (!gameOver) canvas.style.borderColor = 'var(--border-color)';
-                    }, 200);
-
-                    if (lives <= 0) {
-                        endGame(false);
-                        return;
-                    }
-                }
-            }
-
-            // Particles
-            for (let i = particles.length - 1; i >= 0; i--) {
-                particles[i].update();
-                particles[i].draw();
-                if (particles[i].life <= 0) particles.splice(i, 1);
-            }
-
-            // Lasers
-            for (let i = lasers.length - 1; i >= 0; i--) {
-                lasers[i].update();
-                lasers[i].draw();
-                if (lasers[i].life <= 0) lasers.splice(i, 1);
-            }
-
-            drawPlayerBase();
-
-            animationId = requestAnimationFrame(gameLoop);
-        }
-
-        // --- Input Listeners ---
-        window.addEventListener('keydown', (e) => {
-            if (gameOver) return;
-            
-            // Allow typing a-z and hyphens
-            if (e.key.length !== 1 || !/[a-zA-Z\-]/.test(e.key)) return;
-
-            const key = e.key.toLowerCase();
-            
-            if (targetedWord) {
-                if (key === targetedWord.text[targetedWord.typedIndex]) {
-                    targetedWord.typedIndex++;
+                    <div class="slider-container" style="margin-top: 24px; text-align: left; display: flex; align-items: center; justify-content: space-between; gap: 15px; border-top: 1px dashed rgba(255,255,255,0.06); padding-top: 20px;">
+                        <span style="font-size:0.95rem; font-weight:600; color:var(--text-main);">Advanced Mode <span style="font-size: 0.78rem; font-weight:400; color:var(--text-muted); display:block; margin-top:2px;">No letter bank hints. Use physical keyboard or A-Z keys.</span></span>
+                        <label class="switch">
+                            <input type="checkbox" id="advanced-mode-toggle">
+                            <span class="slider-toggle"></span>
+                        </label>
+                    </div>
                     
-                    if (targetedWord.typedIndex === targetedWord.text.length) {
-                        const targetX = targetedWord.x + targetedWord.width / 2;
-                        const targetY = targetedWord.y;
+                    <div class="slider-container" style="margin-top: 24px; text-align: left; border-top: 1px dashed rgba(255,255,255,0.06); padding-top: 20px;">
+                        <label style="display:block; font-size:0.95rem; font-weight:600; margin-bottom:12px; color:var(--text-main);">App Theme:</label>
+                        <div class="theme-options" style="display:flex; gap:10px; flex-wrap:wrap;">
+                            <button class="theme-btn active" data-theme="default" title="Aurora (Default)">
+                                <span class="theme-dot" style="background: linear-gradient(135deg, #6366f1, #ec4899);"></span>
+                                Aurora
+                            </button>
+                            <button class="theme-btn" data-theme="jungle" title="Jungle Breeze">
+                                <span class="theme-dot" style="background: linear-gradient(135deg, #10b981, #06b6d4);"></span>
+                                Jungle
+                            </button>
+                            <button class="theme-btn" data-theme="sunset" title="Sunset Amber">
+                                <span class="theme-dot" style="background: linear-gradient(135deg, #f97316, #e11d48);"></span>
+                                Sunset
+                            </button>
+                            <button class="theme-btn" data-theme="sakura" title="Sakura Dream">
+                                <span class="theme-dot" style="background: linear-gradient(135deg, #f472b6, #fda4af);"></span>
+                                Sakura
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px; display:flex; gap:15px;">
+                    <button id="start-challenge-btn" class="btn-primary" style="margin-top:0; flex-grow:2;">Start Challenge</button>
+                    <button id="change-file-btn" class="btn-outline" style="margin-top:0; flex-grow:1;">Change File</button>
+                </div>
+            </div>
+        </section>
 
-                        lasers.push(new Laser(targetX, targetY));
-                        createExplosion(targetX, targetY);
+        <!-- View: Game (Worksheet Stages) -->
+        <section id="view-game" class="view">
+            <div class="game-header">
+                <div class="stats" style="margin-bottom:15px;">
+                    <button class="btn-icon-text" id="reset-btn" title="Return to Menu">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+                        Exit
+                    </button>
+                    <span id="game-status-badge" style="background:rgba(99, 102, 241, 0.15); color:var(--accent-primary); padding:4px 12px; border-radius:12px; font-size:0.85rem; font-weight:700; border:1px solid rgba(99,102,241,0.3);">Worksheet Mode</span>
+                </div>
+            </div>
 
-                        activeWords = activeWords.filter(w => w !== targetedWord);
-                        targetedWord = null;
-                        score += 10;
-                        scoreElement.innerText = score;
-                    }
-                }
-                return;
-            }
+            <!-- Stage 1: Review Sheet -->
+            <div id="stage-review" class="stage-container">
+                <h3 style="font-size:1.4rem; font-weight:700; margin-bottom:8px; text-align:left; color:var(--text-main);">Vocabulary Review</h3>
+                <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:25px; text-align:left;">Study the vocabulary example sentences below and listen to pronunciations before starting the practice sheet.</p>
+                
+                <div id="review-list" class="worksheet-list" style="max-height: 420px; overflow-y: auto; margin-bottom: 25px; padding-right: 5px; text-align: left;">
+                    <!-- Dynamic Review Cards -->
+                </div>
+                
+                <button id="start-practice-btn" class="btn-primary" style="margin-top: 0; width:100%; padding:16px 0; font-size:1.15rem;">Start Practice Sheet</button>
+            </div>
 
-            // Lock target if not currently locked on
-            for (let word of activeWords) {
-                if (key === word.text[0]) {
-                    targetedWord = word;
-                    targetedWord.typedIndex = 1;
-                    break;
-                }
-            }
-        });
+            <!-- Stage 2: Practice Sheet (Worksheet) -->
+            <div id="stage-practice" class="stage-container hidden">
+                <h3 style="font-size:1.4rem; font-weight:700; margin-bottom:8px; text-align:left; color:var(--text-main);">Worksheet Practice</h3>
+                <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:25px; text-align:left;">Fill in the carved-out space in each sentence. Click on any sentence's slots to activate it, then select its letters or type directly.</p>
+                
+                <!-- Sequential Virtual Keyboard for Advanced Mode -->
+                <div id="virtual-keyboard" class="virtual-keyboard hidden"></div>
+                
+                <div id="practice-list" class="worksheet-list" style="max-height: 420px; overflow-y: auto; margin-bottom: 25px; padding-right: 5px; text-align: left;">
+                    <!-- Dynamic Practice Worksheet Cards -->
+                </div>
+                
+                <button id="submit-practice-btn" class="btn-primary" style="margin-top: 0; width:100%; padding:16px 0; font-size:1.15rem;">Submit Practice Sheet</button>
+            </div>
 
-        // Initialize and load first topic
-        lastSpawnTime = -9999;
-        loadVocabulary('vocabularies/1_a_favourite_toy_shop.csv');
+            <!-- Hidden capture input for global worksheet keyboard capturing -->
+            <input type="text" id="hidden-typing-input" class="hidden-input-capture" autocomplete="off" spellcheck="false">
+        </section>
 
-    </script>
+        <!-- View: Result -->
+        <section id="view-result" class="view">
+            <h2 class="result-title">Challenge Complete!</h2>
+            <div class="score-circle">
+                <span id="final-score-text">0%</span>
+            </div>
+            <p class="stats-summary" id="summary-text" style="margin-bottom: 35px; line-height:1.5; color:var(--text-muted); font-size:1rem; font-weight:400;"></p>
+            
+            <div class="result-controls" style="display: flex; flex-direction: column; gap: 12px; max-width: 400px; margin: 0 auto;">
+                <button id="retry-mistakes-btn" class="btn-primary" style="margin:0; width:100%; padding:14px 0;">Practice Mistakes Again</button>
+                <button id="retry-round-btn" class="btn-outline" style="margin:0; width:100%; padding:14px 0;">Practice This Round Again</button>
+                <button id="next-round-btn" class="btn-outline" style="margin:0; width:100%; padding:14px 0;">Practice Next Round</button>
+                <button id="go-home-btn" class="btn-outline" style="margin:0; width:100%; padding:14px 0; border-color:transparent; background:rgba(255,255,255,0.02);">Back to Main Menu</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
 </body>
 </html>
