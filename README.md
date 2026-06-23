@@ -1,19 +1,43 @@
-# Vocab Defender - Arcade Typing Game
+# LexiScramble - Fun Vocabulary Learning Web App
 
-Vocab Defender is a retro, arcade-style typing game built with HTML5 Canvas. Learn and practice English vocabulary across 9 different topics with Chinese translation guides.
+LexiScramble is a modern, responsive, and dynamic web application designed to help users learn and master English vocabulary in context. It supports pronunciation guides, contextual sentence worksheets, customized learning progress, and a persistent Mistake Bank.
 
-## Features
+## 🚀 Features
 
-- **9 Pre-loaded Vocabulary Topics**: Covers categories from toys and parties to medicine, weather, and town vocabulary.
-- **Cyber-Arcade Aesthetics**: Glow effects, space particles, laser fire, and neon typography powered by Google Fonts.
-- **Interactive Controls**: Adjustable speed settings, custom starting lives, time limits, and real-time score tracking.
-- **Robust CSV Parser**: Supports custom CSV vocabulary imports (retaining complex strings, quotes, and punctuation).
+- **Interactive Vocabulary Review**: Study the target words in context with built-in voice pronunciation guides (using the Web Speech Synthesis API) and traditional/simplified Chinese translation guides.
+- **Worksheet Practice Mode**: Active filling of vocabulary slots inside context sentences.
+- **Advanced Mode**: Toggle off letter bank hints and use physical keyboard or the onscreen sequential A-Z virtual keyboard for a harder spelling challenge.
+- **Pre-loaded & Custom CSV Support**: Play using one of the 9 preloaded vocabulary lists (covering topics from "Favourite Toy Shop" to "Dreaming of Holidays") or drag-and-drop your own custom vocabulary CSV.
+- **Mistake Bank & Practice Progress**:
+  - Automatically captures missed words so you can review and practice them again later.
+  - Saves your practiced progress locally (using `localStorage`) and shows a visual progress bar.
+- **Beautiful Aurora-inspired Themes**: Select from 4 premium, glassmorphism-enhanced color themes:
+  - Aurora (Default Neon)
+  - Jungle Breeze (Cyan/Green)
+  - Sunset Amber (Orange/Red)
+  - Sakura Dream (Pink/Purple)
 
 ---
 
-## How to Play and Run Locally
+## 🛠️ CSV File Format
 
-Because the game dynamically loads vocabulary CSV lists via JavaScript `fetch`, opening `index.html` directly in your browser using the file protocol (`file:///...`) will trigger CORS errors.
+To upload your custom vocabulary list, create a `.csv` file with the following columns (optional header row containing "單字" can be auto-detected):
+
+```csv
+"Word", "Type", "Definition/Translation", "Example Sentence"
+```
+
+*Example:*
+```csv
+"dolphin", "n. (名詞)", "海豚", "Dolphin is a very intelligent animal."
+"castle", "n. (名詞)", "城堡", "They visited an ancient castle on the hill."
+```
+
+---
+
+## 💻 How to Run Locally
+
+Because the application dynamically loads local vocabulary lists via JavaScript `fetch`, opening `index.html` directly in your browser using the file protocol (`file:///...`) will trigger CORS errors.
 
 You must run the game using a **local web server**. Here are the easiest ways to do it:
 
@@ -32,31 +56,17 @@ You must run the game using a **local web server**. Here are the easiest ways to
 
 ---
 
-## Pushing to GitHub
+## 📦 Pushing to GitHub
 
-To publish this project to GitHub:
-
-1. Go to [github.com](https://github.com) and create a new repository named `vocab-game`. Leave it empty (do not initialize with a README, gitignore, or license).
-2. Open your terminal in the `vocab-game` directory on your computer and run the following commands:
+To configure your remote repository and push updates:
 
 ```bash
-# Initialize local git repository
-git init
-
-# Stage all files
-git add .
-
-# Create initial commit
-git commit -m "Initial commit of vocab-game"
-
-# Rename default branch to main
-git branch -M main
-
-# Link your local repo to GitHub (replace with your GitHub username)
+# Link your local repo to GitHub
 git remote add origin https://github.com/YOUR_GITHUB_USERNAME/vocab-game.git
+
+# Rename branch to main
+git branch -M main
 
 # Push to GitHub
 git push -u origin main
 ```
-
-Once pushed, you can also easily host it for free on **GitHub Pages** by going to `Repository Settings -> Pages -> Deploy from branch (main)`.
