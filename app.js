@@ -799,56 +799,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('practice-config').classList.remove('hidden');
     });
 
-    // Preset Topic Select Listener
-    const presetSelect = document.getElementById('preset-topic-select');
-    if (presetSelect) {
-        presetSelect.addEventListener('change', async (e) => {
-            const path = e.target.value;
-            if (!path) return;
-            
-            try {
-                const response = await fetch(path);
-                if (!response.ok) throw new Error("Failed to load topic file");
-                const text = await response.text();
-                const data = parseCSV(text);
-                if (data.length > 0) {
-                    fullVocabList = [...data];
-                    unpracticedVocabList = [...data];
-                    
-                    const fileName = path.split('/').pop();
-                    activeFileName = fileName;
-                    mistakeBank = JSON.parse(localStorage.getItem('lexiscramble_mistakes_' + activeFileName)) || [];
-                    syncMistakeUI();
-                    syncPracticedProgress();
-                    
-                    const optText = presetSelect.options[presetSelect.selectedIndex].text;
-                    document.getElementById('config-file-name').textContent = optText;
-                    document.getElementById('config-max-words').textContent = `${data.length} vocabulary words loaded`;
-                    
-                    const slider = document.getElementById('vocab-count-slider');
-                    const numInput = document.getElementById('vocab-count-number');
-                    
-                    slider.max = data.length;
-                    numInput.max = data.length;
-                    
-                    const defaultVal = Math.min(5, data.length);
-                    slider.value = defaultVal;
-                    numInput.value = defaultVal;
-                    
-                    document.getElementById('upload-subtitle').textContent = "Configure your vocabulary session limits.";
-                    document.getElementById('upload-zone-container').classList.add('hidden');
-                    document.getElementById('practice-config').classList.remove('hidden');
-                } else {
-                    alert("No valid vocabulary rows found in this list.");
-                }
-            } catch (error) {
-                console.error("Error loading preset vocabulary", error);
-                alert("Failed to load vocabulary list. Make sure you are running a local server.");
-            } finally {
-                presetSelect.value = "";
-            }
-        });
-    }
+
 
     // Start Practice Button Listener
     document.getElementById('start-practice-btn').addEventListener('click', () => {

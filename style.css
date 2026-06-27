@@ -1105,15 +1105,15 @@ input:checked + .slider-toggle:before {
 /* --- NEW: Dynamic Theme Selection --- */
 .theme-options {
     display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
+    gap: 8px;
+    flex-wrap: nowrap;
 }
 
 .theme-btn {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid var(--glass-border);
     color: var(--text-muted);
-    padding: 8px 16px;
+    padding: 8px 12px;
     border-radius: 20px;
     cursor: pointer;
     font-family: inherit;

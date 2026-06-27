@@ -82,25 +82,28 @@
                 </div>
                 <button id="load-demo-btn" class="btn-outline" style="margin: 0 auto; width: 100%; max-width: 320px; display: block; border-color: rgba(255, 255, 255, 0.15); padding: 12px 0;">Try Demo Vocab List</button>
 
-                <div style="margin: 20px 0; display: flex; align-items: center; justify-content: center; gap: 10px; color: var(--text-muted);">
-                    <hr style="flex-grow: 1; border: 0; border-top: 1px solid rgba(255,255,255,0.06);">
-                    <span style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Or practice pre-loaded topics</span>
-                    <hr style="flex-grow: 1; border: 0; border-top: 1px solid rgba(255,255,255,0.06);">
-                </div>
 
-                <div class="topic-grid" style="margin-bottom: 20px;">
-                    <select id="preset-topic-select" style="width: 100%; max-width: 320px; display: block; margin: 0 auto; padding: 12px 16px; font-size: 0.9rem; font-family: inherit; font-weight: 600; cursor: pointer; background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 12px; color: var(--text-main); transition: var(--transition);">
-                        <option value="" style="background: var(--bg-color);">-- Select Topic List --</option>
-                        <option value="vocabularies/1_a_favourite_toy_shop.csv" style="background: var(--bg-color);">1. A Favourite Toy Shop</option>
-                        <option value="vocabularies/2_the_party.csv" style="background: var(--bg-color);">2. The Party</option>
-                        <option value="vocabularies/3_at_the_doctors.csv" style="background: var(--bg-color);">3. At the Doctor's</option>
-                        <option value="vocabularies/4_uncle_charlies_hotel.csv" style="background: var(--bg-color);">4. Uncle Charlie's Hotel</option>
-                        <option value="vocabularies/5_from_the_countryside_to_the_jungle.csv" style="background: var(--bg-color);">5. Countryside to Jungle</option>
-                        <option value="vocabularies/6_the_weather.csv" style="background: var(--bg-color);">6. The Weather</option>
-                        <option value="vocabularies/7_our_town.csv" style="background: var(--bg-color);">7. Our Town</option>
-                        <option value="vocabularies/8_dreaming_of_holidays.csv" style="background: var(--bg-color);">8. Dreaming of Holidays</option>
-                        <option value="vocabularies/9_some_games.csv" style="background: var(--bg-color);">9. Some Games</option>
-                    </select>
+                <!-- Theme Switching on Homepage -->
+                <div class="theme-container" style="margin-top: 30px; border-top: 1px dashed rgba(255,255,255,0.06); padding-top: 20px; text-align: left; max-width: 480px; margin-left: auto; margin-right: auto;">
+                    <label style="display:block; font-size:0.95rem; font-weight:600; margin-bottom:12px; color:var(--text-main); text-align: center;">App Theme:</label>
+                    <div class="theme-options" style="display:flex; gap:10px; flex-wrap:nowrap; justify-content: center;">
+                        <button class="theme-btn active" data-theme="default" title="Aurora (Default)">
+                            <span class="theme-dot" style="background: linear-gradient(135deg, #6366f1, #ec4899);"></span>
+                            Aurora
+                        </button>
+                        <button class="theme-btn" data-theme="jungle" title="Jungle Breeze">
+                            <span class="theme-dot" style="background: linear-gradient(135deg, #10b981, #06b6d4);"></span>
+                            Jungle
+                        </button>
+                        <button class="theme-btn" data-theme="sunset" title="Sunset Amber">
+                            <span class="theme-dot" style="background: linear-gradient(135deg, #f97316, #e11d48);"></span>
+                            Sunset
+                        </button>
+                        <button class="theme-btn" data-theme="sakura" title="Sakura Dream">
+                            <span class="theme-dot" style="background: linear-gradient(135deg, #f472b6, #fda4af);"></span>
+                            Sakura
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -141,28 +144,7 @@
                             <span class="slider-toggle"></span>
                         </label>
                     </div>
-                    
-                    <div class="slider-container" style="margin-top: 24px; text-align: left; border-top: 1px dashed rgba(255,255,255,0.06); padding-top: 20px;">
-                        <label style="display:block; font-size:0.95rem; font-weight:600; margin-bottom:12px; color:var(--text-main);">App Theme:</label>
-                        <div class="theme-options" style="display:flex; gap:10px; flex-wrap:wrap;">
-                            <button class="theme-btn active" data-theme="default" title="Aurora (Default)">
-                                <span class="theme-dot" style="background: linear-gradient(135deg, #6366f1, #ec4899);"></span>
-                                Aurora
-                            </button>
-                            <button class="theme-btn" data-theme="jungle" title="Jungle Breeze">
-                                <span class="theme-dot" style="background: linear-gradient(135deg, #10b981, #06b6d4);"></span>
-                                Jungle
-                            </button>
-                            <button class="theme-btn" data-theme="sunset" title="Sunset Amber">
-                                <span class="theme-dot" style="background: linear-gradient(135deg, #f97316, #e11d48);"></span>
-                                Sunset
-                            </button>
-                            <button class="theme-btn" data-theme="sakura" title="Sakura Dream">
-                                <span class="theme-dot" style="background: linear-gradient(135deg, #f472b6, #fda4af);"></span>
-                                Sakura
-                            </button>
-                        </div>
-                    </div>
+
                 </div>
                 
                 <div style="margin-top: 30px; display:flex; gap:15px;">
