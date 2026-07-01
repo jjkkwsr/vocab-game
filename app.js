@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let desiredPracticeSize = 5;   // Remembers the user's desired word count configured on landing
     let practicedVocabSet = new Set(); // Set of unique lowercase words historically practiced for active CSV
     let isAdvancedMode = localStorage.getItem('lexiscramble_advanced_mode') === 'true';
+    let activeGameMode = 'worksheet'; // 'worksheet' or 'wordbank'
 
     // Advanced Mode Toggle Setup
     const advancedToggle = document.getElementById('advanced-mode-toggle');
@@ -24,6 +25,26 @@ document.addEventListener('DOMContentLoaded', () => {
         advancedToggle.addEventListener('change', (e) => {
             isAdvancedMode = e.target.checked;
             localStorage.setItem('lexiscramble_advanced_mode', isAdvancedMode);
+        });
+    }
+
+    // Practice Mode Switch Setup
+    const modeWorksheetBtn = document.getElementById('mode-worksheet-btn');
+    const modeWordbankBtn = document.getElementById('mode-wordbank-btn');
+    const advancedModeContainer = document.getElementById('advanced-mode-container');
+    
+    if (modeWorksheetBtn && modeWordbankBtn) {
+        modeWorksheetBtn.addEventListener('click', () => {
+            activeGameMode = 'worksheet';
+            modeWorksheetBtn.classList.add('active');
+            modeWordbankBtn.classList.remove('active');
+            if (advancedModeContainer) advancedModeContainer.classList.remove('hidden');
+        });
+        modeWordbankBtn.addEventListener('click', () => {
+            activeGameMode = 'wordbank';
+            modeWordbankBtn.classList.add('active');
+            modeWorksheetBtn.classList.remove('active');
+            if (advancedModeContainer) advancedModeContainer.classList.add('hidden');
         });
     }
 
@@ -359,25 +380,38 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 50);
     }
 
-    // --- Game Stage 2: Practice Worksheet ---
+    // --- Game Stage 2: Practice Worksheet / Word Bank Stage ---
     function startPracticeStage() {
         document.getElementById('stage-review').classList.add('hidden');
-        document.getElementById('stage-practice').classList.remove('hidden');
         
-        const keyboardContainer = document.getElementById('virtual-keyboard');
-        const practiceStage = document.getElementById('stage-practice');
+        const gameStatusBadge = document.getElementById('game-status-badge');
         
-        if (isAdvancedMode) {
-            practiceStage.classList.add('advanced-mode-active');
-            if (keyboardContainer) {
-                keyboardContainer.classList.remove('hidden');
-                renderVirtualKeyboard();
+        if (activeGameMode === 'worksheet') {
+            if (gameStatusBadge) gameStatusBadge.textContent = 'Spelling Mode';
+            document.getElementById('stage-practice').classList.remove('hidden');
+            document.getElementById('stage-wordbank').classList.add('hidden');
+            
+            const keyboardContainer = document.getElementById('virtual-keyboard');
+            const practiceStage = document.getElementById('stage-practice');
+            
+            if (isAdvancedMode) {
+                practiceStage.classList.add('advanced-mode-active');
+                if (keyboardContainer) {
+                    keyboardContainer.classList.remove('hidden');
+                    renderVirtualKeyboard();
+                }
+            } else {
+                practiceStage.classList.remove('advanced-mode-active');
+                if (keyboardContainer) {
+                    keyboardContainer.classList.add('hidden');
+                }
             }
         } else {
-            practiceStage.classList.remove('advanced-mode-active');
-            if (keyboardContainer) {
-                keyboardContainer.classList.add('hidden');
-            }
+            if (gameStatusBadge) gameStatusBadge.textContent = 'Word Bank Mode';
+            document.getElementById('stage-practice').classList.add('hidden');
+            document.getElementById('stage-wordbank').classList.remove('hidden');
+            startWordBankStage();
+            return;
         }
         
         // Compute actual matched words in sentence context to accurately handle tenses & plurals
@@ -593,6 +627,165 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 2000);
     }
 
+    // --- Game Stage 3: Word Bank Quiz Mode ---
+    function startWordBankStage() {
+        // Match actual words in context to display them if needed
+        tempVocabList.forEach(item => {
+            const safeWord = item.word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const fuzzyWord = safeWord.split(/\s+/).map(w => w + '[a-z]*').join('\\s+');
+            const regex = new RegExp(`\\b${fuzzyWord}\\b`, 'gi');
+            const match = item.sentence.match(regex);
+            item.practiceWord = match ? match[0] : item.word;
+        });
+
+        // Render Word Bank Chips
+        const chipsContainer = document.getElementById('wordbank-chips');
+        chipsContainer.innerHTML = '';
+        
+        const bankWords = tempVocabList.map(item => item.practiceWord);
+        shuffleArray(bankWords);
+
+        bankWords.forEach(word => {
+            const chip = document.createElement('div');
+            chip.className = 'wordbank-chip';
+            chip.textContent = word;
+            chip.dataset.word = word;
+            
+            chip.addEventListener('click', () => {
+                // Find currently focused cloze-input, or first empty cloze-input
+                let activeInput = document.activeElement;
+                if (!activeInput || !activeInput.classList.contains('cloze-input')) {
+                    const inputs = Array.from(document.querySelectorAll('.cloze-input'));
+                    activeInput = inputs.find(input => input.value === '');
+                }
+                
+                if (activeInput) {
+                    activeInput.value = word;
+                    activeInput.focus();
+                }
+            });
+            
+            chipsContainer.appendChild(chip);
+        });
+
+        // Render Cloze Sentences List
+        const listContainer = document.getElementById('wordbank-practice-list');
+        listContainer.innerHTML = '';
+
+        // Scramble sentence cards order
+        const indexedItems = tempVocabList.map((item, originalIdx) => ({ item, originalIdx }));
+        shuffleArray(indexedItems);
+
+        indexedItems.forEach(({ item, originalIdx }) => {
+            // Replace the target word with a text input field
+            const blankHtml = `<input type="text" class="cloze-input" id="cloze-input-${originalIdx}" data-original-idx="${originalIdx}" placeholder="Fill..." autocomplete="off" spellcheck="false" style="width: ${Math.max(120, item.practiceWord.length * 15)}px;">`;
+            
+            const safeWord = item.word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const fuzzyWord = safeWord.split(/\s+/).map(w => w + '[a-z]*').join('\\s+');
+            const regex = new RegExp(`\\b${fuzzyWord}\\b`, 'gi');
+            
+            let displaySentence = item.sentence.replace(regex, blankHtml);
+            if (displaySentence === item.sentence) {
+                displaySentence = item.sentence.replace(new RegExp(safeWord, 'gi'), blankHtml);
+            }
+            if (displaySentence === item.sentence) {
+                displaySentence = item.sentence + " " + blankHtml;
+            }
+
+            const card = document.createElement('div');
+            card.className = 'practice-card';
+            card.style.cursor = 'default';
+            card.innerHTML = `
+                <div class="practice-card-header" style="margin-bottom: 12px;">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span style="font-size:1.05rem; font-weight:700; color:var(--accent-secondary);">【${item.type}】${item.translation}</span>
+                        <button class="inline-speak-btn wordbank-speak-btn" title="Listen to pronunciation" style="width:28px; height:28px; padding:0;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                        </button>
+                    </div>
+                    <span class="practice-card-status-icon" id="wordbank-status-icon-q-${originalIdx}"></span>
+                </div>
+                <div class="practice-sentence-text" style="font-size: 1.15rem; line-height: 1.6;">${displaySentence}</div>
+            `;
+
+            listContainer.appendChild(card);
+
+            card.querySelector('.wordbank-speak-btn').onclick = (e) => {
+                e.stopPropagation();
+                speakCustomSentence(item.sentence);
+            };
+        });
+    }
+
+    function submitWordBankQuiz() {
+        let roundScore = 0;
+        mistakeList = [];
+        
+        tempVocabList.forEach((item, qIdx) => {
+            const inputElement = document.getElementById(`cloze-input-${qIdx}`);
+            const userAns = inputElement ? inputElement.value.toLowerCase().trim() : '';
+            const actualAns = item.practiceWord.toLowerCase().trim();
+            
+            const card = inputElement ? inputElement.closest('.practice-card') : null;
+            const statusIcon = document.getElementById(`wordbank-status-icon-q-${qIdx}`);
+            
+            if (userAns === actualAns) {
+                roundScore++;
+                if (card) {
+                    card.classList.add('success-answered');
+                    card.classList.remove('error-answered');
+                }
+                if (inputElement) {
+                    inputElement.style.borderBottomColor = 'var(--success)';
+                    inputElement.style.color = 'var(--success)';
+                    inputElement.disabled = true;
+                }
+                if (statusIcon) {
+                    statusIcon.innerHTML = `<span style="color:var(--success)">Correct ✓</span>`;
+                }
+            } else {
+                mistakeList.push(item);
+                addToMistakes(item);
+                if (card) {
+                    card.classList.add('error-answered');
+                    card.classList.remove('success-answered');
+                }
+                if (inputElement) {
+                    inputElement.style.borderBottomColor = 'var(--error)';
+                    inputElement.style.color = 'var(--error)';
+                    inputElement.disabled = true;
+                }
+                if (statusIcon) {
+                    statusIcon.innerHTML = `<span style="color:var(--error)">Wrong ✗ (Correction: ${item.practiceWord})</span>`;
+                }
+            }
+        });
+        
+        // Record and save unique practiced words in localStorage
+        tempVocabList.forEach(item => {
+            practicedVocabSet.add(item.word.toLowerCase());
+        });
+        localStorage.setItem('lexiscramble_practiced_' + activeFileName, JSON.stringify(Array.from(practicedVocabSet)));
+        
+        setTimeout(() => {
+            switchView('result');
+            const percentage = Math.round((roundScore / tempVocabList.length) * 100) || 0;
+            document.getElementById('final-score-text').textContent = `${percentage}%`;
+            
+            const retryMistakesBtn = document.getElementById('retry-mistakes-btn');
+            if (mistakeList.length > 0) {
+                retryMistakesBtn.style.display = 'block';
+            } else {
+                retryMistakesBtn.style.display = 'none';
+            }
+            
+            document.getElementById('summary-text').innerHTML = `
+                Quiz Complete!<br>
+                You answered <strong>${roundScore}</strong> out of <strong>${tempVocabList.length}</strong> questions correctly.
+            `;
+        }, 2000);
+    }
+
     function showToast(msg, color) {
         const toast = document.getElementById('feedback');
         toast.textContent = msg;
@@ -723,6 +916,14 @@ document.addEventListener('DOMContentLoaded', () => {
         answersState = [];
         activeSentenceIndex = 0;
         csvInput.value = ''; 
+        
+        // Reset any inputs in Word Bank Mode
+        document.querySelectorAll('.cloze-input').forEach(input => {
+            input.value = '';
+            input.disabled = false;
+            input.style.borderBottomColor = '';
+            input.style.color = '';
+        });
     }
 
     // Reset Button Listener (Immediate Exit)
@@ -809,6 +1010,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Submit Practice Button Listener
     document.getElementById('submit-practice-btn').addEventListener('click', () => {
         submitPractice();
+    });
+
+    // Submit Word Bank Button Listener
+    document.getElementById('submit-wordbank-btn').addEventListener('click', () => {
+        submitWordBankQuiz();
     });
 
     // Global Worksheet Keyboard Captures
