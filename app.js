@@ -469,7 +469,14 @@ document.addEventListener('DOMContentLoaded', () => {
             
             card.querySelector('.practice-speak-btn').onclick = (e) => {
                 e.stopPropagation();
-                speakCustomSentence(item.sentence);
+                const safeWord = item.word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const fuzzyWord = safeWord.split(/\s+/).map(w => w + '[a-z]*').join('\\s+');
+                const regex = new RegExp(`\\b${fuzzyWord}\\b`, 'gi');
+                let spokenSentence = item.sentence.replace(regex, 'blank');
+                if (spokenSentence === item.sentence) {
+                    spokenSentence = item.sentence.replace(new RegExp(safeWord, 'gi'), 'blank');
+                }
+                speakCustomSentence(spokenSentence);
             };
             
             const letterBank = card.querySelector('.practice-card-letter-bank');
@@ -698,7 +705,7 @@ document.addEventListener('DOMContentLoaded', () => {
             card.innerHTML = `
                 <div class="practice-card-header" style="margin-bottom: 12px;">
                     <div style="display:flex; align-items:center; gap:10px;">
-                        <span style="font-size:1.05rem; font-weight:700; color:var(--accent-secondary);">【${item.type}】${item.translation}</span>
+                        <span style="font-size:1.05rem; font-weight:700; color:var(--accent-secondary);">【${item.type}】</span>
                         <button class="inline-speak-btn wordbank-speak-btn" title="Listen to pronunciation" style="width:28px; height:28px; padding:0;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
                         </button>
@@ -712,7 +719,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             card.querySelector('.wordbank-speak-btn').onclick = (e) => {
                 e.stopPropagation();
-                speakCustomSentence(item.sentence);
+                const safeWord = item.word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const fuzzyWord = safeWord.split(/\s+/).map(w => w + '[a-z]*').join('\\s+');
+                const regex = new RegExp(`\\b${fuzzyWord}\\b`, 'gi');
+                let spokenSentence = item.sentence.replace(regex, 'blank');
+                if (spokenSentence === item.sentence) {
+                    spokenSentence = item.sentence.replace(new RegExp(safeWord, 'gi'), 'blank');
+                }
+                speakCustomSentence(spokenSentence);
             };
         });
     }
