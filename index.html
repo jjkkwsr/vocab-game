@@ -137,19 +137,7 @@
                         </div>
                     </div>
                     
-                    <div class="mode-selection-container" style="margin-top: 24px; text-align: left; border-top: 1px dashed rgba(255,255,255,0.06); padding-top: 20px;">
-                        <label style="display:block; font-size:0.95rem; font-weight:600; margin-bottom:12px; color:var(--text-main);">Practice Mode:</label>
-                        <div class="mode-options" style="display:flex; gap:10px;">
-                            <button class="mode-btn active" id="mode-worksheet-btn" type="button" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.05); color: var(--text-main); font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
-                                Spelling Mode
-                            </button>
-                            <button class="mode-btn" id="mode-wordbank-btn" type="button" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.05); color: var(--text-main); font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
-                                Word Bank Mode
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div id="advanced-mode-container" class="slider-container" style="margin-top: 24px; text-align: left; display: flex; align-items: center; justify-content: space-between; gap: 15px; border-top: 1px dashed rgba(255,255,255,0.06); padding-top: 20px;">
+                    <div class="slider-container" style="margin-top: 24px; text-align: left; display: flex; align-items: center; justify-content: space-between; gap: 15px; border-top: 1px dashed rgba(255,255,255,0.06); padding-top: 20px;">
                         <span style="font-size:0.95rem; font-weight:600; color:var(--text-main);">Advanced Mode <span style="font-size: 0.78rem; font-weight:400; color:var(--text-muted); display:block; margin-top:2px;">No letter bank hints. Use physical keyboard or A-Z keys.</span></span>
                         <label class="switch">
                             <input type="checkbox" id="advanced-mode-toggle">
@@ -203,26 +191,6 @@
                 </div>
                 
                 <button id="submit-practice-btn" class="btn-primary" style="margin-top: 0; width:100%; padding:16px 0; font-size:1.15rem;">Submit Practice Sheet</button>
-            </div>
-
-            <!-- Stage 3: Word Bank Quiz Mode (Word Bank) -->
-            <div id="stage-wordbank" class="stage-container hidden">
-                <h3 style="font-size:1.4rem; font-weight:700; margin-bottom:8px; text-align:left; color:var(--text-main);">Word Bank Quiz</h3>
-                <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:20px; text-align:left;">Click a word in the Word Bank, then click a blank space in any sentence to fill it. Click a filled blank to clear it.</p>
-                
-                <!-- Shared Word Bank -->
-                <div class="wordbank-container-box" style="background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 12px; padding: 15px; margin-bottom: 25px; text-align: left;">
-                    <h4 style="font-size: 0.95rem; font-weight: 600; color: var(--accent-secondary); margin-bottom: 10px; margin-top: 0;">Word Bank</h4>
-                    <div id="wordbank-chips" style="display: flex; flex-wrap: wrap; gap: 8px;">
-                        <!-- Dynamic word chips -->
-                    </div>
-                </div>
-                
-                <div id="wordbank-practice-list" class="worksheet-list" style="max-height: 400px; overflow-y: auto; margin-bottom: 25px; padding-right: 5px; text-align: left;">
-                    <!-- Dynamic Cloze Sentences -->
-                </div>
-                
-                <button id="submit-wordbank-btn" class="btn-primary" style="margin-top: 0; width:100%; padding:16px 0; font-size:1.15rem;">Submit Quiz</button>
             </div>
 
             <!-- Hidden capture input for global worksheet keyboard capturing -->
